@@ -9,6 +9,7 @@ CLOUDEON_HOME="${BASE_DIR}"
 CONF_DIR="${BASE_DIR}/conf"
 LIB_DIR="${BASE_DIR}/lib"
 LOG_DIR="${BASE_DIR}/log"
+DB_DIR="${BASE_DIR}/db"
 TMP_DIR="${BASE_DIR}/tmp"
 PID_FILE="${BASE_DIR}/bin/server.pid"
 APPLICATION_CONF="${CONF_DIR}/application.yaml"
@@ -45,7 +46,7 @@ start_server() {
         exit 0
     fi
 
-    mkdir -p "$LOG_DIR" "$TMP_DIR"
+    mkdir -p "$LOG_DIR" "$TMP_DIR" "$DB_DIR"
     [ -f "$APPLICATION_CONF" ] || error_exit "Cannot find $APPLICATION_CONF"
 
     local RUN_JAR=$(ls -t "${LIB_DIR}"/*.jar | head -1)

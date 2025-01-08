@@ -1,23 +1,45 @@
 # Docker部署
 
-### 1.简单运行(仅适用于测试)
+## 容器运行
 
-使用默认配置运行 Cloudeon 容器：
+### 1.内置H2数据库运行
+
+/opt/cloudeon/db 将用来存储h2文件
+
 ```shell
 image=registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:v2.0.0-beta.1
 
-docker run -d --name cloudeon -p 7800:7700 $image
+docker run -d --name cloudeon \
+ -p 7700:7700 \
+ -v /opt/cloudeon/db:/opt/cloudeon/db \
+ $image
 
 ```
 
-### 2.自定义配置文件运行：
+### 2.mysql数据库运行
 
-使用自定义配置文件运行 Cloudeon 容器：
+使用默认配置运行 Cloudeon 容器：
 
-可在conf文件夹下通过application.yaml修改数据库连接配置
+```shell
+image=registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:v2.0.0-beta.1
 
-stack文件夹下包括cloudeon支持的组件的配置文件,修改组件配置文件后重启容器则可更新
+docker run -d --name cloudeon \
+ -p 7700:7700 \
+ -e DB_ACTIVE=mysql \
+ -e MYSQL_HOST=host.docker.internal \
+ -e MYSQL_PORT=3306 \
+ -e MYSQL_DB_NAME=cloudeon \
+ -e MYSQL_USER=root \
+ -e MYSQL_PASSWORD=1qaz@WSX \
+ $image
 
+```
+
+### 3.挂载自定义配置文件和组件模板运行
+
+可以将配置文件和组件模板复制到外部，然后在容器中使用，以此获得最大灵活度。
+
+#### 获取配置文件
 ```shell
 image=registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:v2.0.0-beta.1
 conf_path_dir=/opt/cloudeon
@@ -29,13 +51,24 @@ docker run --rm \
 $image \
 -c "cp -r  /opt/cloudeon/conf /data/workspace/conf && cp -r /opt/cloudeon/stack /data/workspace/stack"
 
-# 根据需求修改配置文件，如在$conf_path_dir/conf下修改数据库连接配置
-# 正式运行
+```
+
+然后就可以根据需求配置文件或部署模板了
+
+#### 挂载文件并运行
+
+```
 docker rm -f cloudeon
 docker run -d --name cloudeon \
--e DB_ACTIVE=mysql \
+ -e DB_ACTIVE=mysql \
+ -e MYSQL_HOST=host.docker.internal \
+ -e MYSQL_PORT=3306 \
+ -e MYSQL_DB_NAME=cloudeon \
+ -e MYSQL_USER=root \
+ -e MYSQL_PASSWORD=1qaz@WSX \
 -v $conf_path_dir/conf:/opt/cloudeon/conf \
 -v $conf_path_dir/stack:/opt/cloudeon/stack \
+-v $conf_path_dir/tmp:/opt/cloudeon/tmp \
 -p 7700:7700 $image
 
 docker logs --tail 100 -f cloudeon
@@ -44,6 +77,8 @@ docker logs --tail 100 -f cloudeon
 
 镜像启动成功后，在浏览器中访问 http://docker_ip:7700 进入登录页。
 镜像中提供初始账户，用户名 admin 密码 admin
+
+## 操作
 
 ### 新增集群
 
