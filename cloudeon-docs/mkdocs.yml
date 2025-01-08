@@ -67,7 +67,6 @@ nav:
       - 组件说明/1.global.md
       - 组件说明/2.helm-controller.md
       - 组件说明/3.kube-prometheus.md
-      - 组件说明/4.open-kruise.md
       - 组件说明/5.elasticsearch.md
       - 组件说明/6.filebeat.md
       - 组件说明/7.zookeeper.md

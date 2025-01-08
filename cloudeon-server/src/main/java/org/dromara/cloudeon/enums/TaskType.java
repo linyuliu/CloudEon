@@ -34,7 +34,8 @@ public enum TaskType {
     SCALE_DOWN_K8S_SERVICE(15, "按规模减少k8s服务", "org.dromara.cloudeon.processor.ScaleK8sServiceDownTask", false),
     SCALE_UP_K8S_SERVICE(16, "按规模增加k8s服务", "org.dromara.cloudeon.processor.ScaleK8sServiceUpTask", false),
     UPDATE_SERVICE_STATE(17, "更新服务实例状态", "org.dromara.cloudeon.processor.UpdateServiceStateTask", false),
-
+    APPLY_ROLE_MONITOR_CONFIGMAP(21, "应用角色相关监控配置", "org.dromara.cloudeon.processor.MonitorConfigApplyTask", false),
+    DELETE_ROLE_MONITOR_CONFIGMAP(22, "删除角色相关监控配置", "org.dromara.cloudeon.processor.MonitorConfigDeleteTask", false),
 
     ;
 

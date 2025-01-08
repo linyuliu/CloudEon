@@ -34,7 +34,8 @@ public enum TaskGroupType {
     STOP_ROLE(12, "停止服务的角色实例", Lists.newArrayList(TaskType.CANCEL_TAG_HOST,TaskType.STOP_ROLE_POD,TaskType.SCALE_DOWN_K8S_SERVICE), true),
     START_ROLE(13, "启动服务的角色实例", Lists.newArrayList(TaskType.TAG_HOST,TaskType.SCALE_UP_K8S_SERVICE), true),
     UPDATE_SERVICE_STATE(14, "更新服务实例状态", Lists.newArrayList(TaskType.UPDATE_SERVICE_STATE), false),
-
+    CONFIG_SERVICE_MONITOR(21, "配置服务监控", Lists.newArrayList(TaskType.APPLY_ROLE_MONITOR_CONFIGMAP), false),
+    DELETE_SERVICE_MONITOR(22, "删除服务监控", Lists.newArrayList(TaskType.DELETE_ROLE_MONITOR_CONFIGMAP), false),
 
     ;
 

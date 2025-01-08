@@ -185,36 +185,6 @@ public abstract class ConfigTask extends BaseCloudeonTask implements ApplyOrDele
         } else {
             log.info("k8sRender目录为空");
         }
-        // 加载kube-prometheus-render目录
-        // 目录下的每一个文件都将视为k8s模板文件进行渲染后操作
-        if (!"NONE".equals(globalConfigMap.get("global.monitor.type"))) {
-            String kubePrometheusRenderDir = serviceBaseDir + File.separator + Constant.KUBE_PROMETHEUS_RENDER_DIR;
-            File kubePrometheusRenderDirFile = new File(kubePrometheusRenderDir);
-            if (!FileUtil.isEmpty(kubePrometheusRenderDirFile)) {
-                log.info("加载kube-prometheus-render目录：" + kubePrometheusRenderDirFile);
-                for (File file : Objects.requireNonNull(kubePrometheusRenderDirFile.listFiles())) {
-                    if (file.isDirectory()) {
-                        continue;
-                    }
-                    String renderStr = FreemarkerUtil.templateEval(FileUtil.readUtf8String(file), dataModel);
-                    kubeService.executeWithKubeClient(clusterId, client -> {
-                        try (InputStream in = IoUtil.toUtf8Stream(renderStr)) {
-                            ParameterNamespaceListVisitFromServerGetDeleteRecreateWaitApplicable<HasMetadata> resource = client.load(in);
-                            if (isApplyTask()) {
-                                resource.forceConflicts().serverSideApply();
-                            } else {
-                                resource.delete();
-                            }
-                        } catch (Exception e) {
-                            log.error("处理资源失败，资源内容如下：\n" + renderStr);
-                            ExceptionUtil.wrapAndThrow(e);
-                        }
-                    });
-                }
-            } else {
-                log.info("kube-prometheus-render目录为空");
-            }
-        }
     }
 
 }

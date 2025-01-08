@@ -203,23 +203,26 @@ public class CommandHandler {
                 List<TaskGroupType> taskGroupTypes = Lists.newArrayList();
                 taskGroupTypes.add(TaskGroupType.CONFIG_SERVICE);
                 taskGroupTypes.add(TaskGroupType.TAG_AND_START_K8S_SERVICE);
+                taskGroupTypes.add(TaskGroupType.CONFIG_SERVICE_MONITOR);
                 taskGroupTypes.add(TaskGroupType.UPDATE_SERVICE_STATE);
                 return taskGroupTypes;
             case START_SERVICE:
                 return Lists.newArrayList(TaskGroupType.TAG_AND_START_K8S_SERVICE, TaskGroupType.UPDATE_SERVICE_STATE);
             case RESTART_SERVICE:
                 return Lists.newArrayList(
+                        TaskGroupType.DELETE_SERVICE_MONITOR,
                         TaskGroupType.CANCEL_TAG_AND_STOP_K8S_SERVICE,
                         TaskGroupType.DELETE_SERVICE,
                         TaskGroupType.CONFIG_SERVICE,
                         TaskGroupType.TAG_AND_START_K8S_SERVICE,
+                        TaskGroupType.CONFIG_SERVICE_MONITOR,
                         TaskGroupType.UPDATE_SERVICE_STATE);
             case STOP_SERVICE:
                 return Lists.newArrayList(TaskGroupType.CANCEL_TAG_AND_STOP_K8S_SERVICE,TaskGroupType.UPDATE_SERVICE_STATE);
             case DELETE_SERVICE:
-                return Lists.newArrayList(TaskGroupType.CANCEL_TAG_AND_STOP_K8S_SERVICE, TaskGroupType.DELETE_SERVICE, TaskGroupType.DELETE_DB_DATA);
+                return Lists.newArrayList(TaskGroupType.DELETE_SERVICE_MONITOR, TaskGroupType.CANCEL_TAG_AND_STOP_K8S_SERVICE, TaskGroupType.DELETE_SERVICE, TaskGroupType.DELETE_DB_DATA);
             case UPGRADE_SERVICE_CONFIG:
-                return Lists.newArrayList(TaskGroupType.CONFIG_SERVICE);
+                return Lists.newArrayList(TaskGroupType.CONFIG_SERVICE, TaskGroupType.CONFIG_SERVICE_MONITOR);
             case STOP_ROLE:
                 return Lists.newArrayList(TaskGroupType.STOP_ROLE);
             case START_ROLE:
