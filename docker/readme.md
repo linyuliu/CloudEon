@@ -95,6 +95,8 @@ $image \
 #### 挂载文件并运行
 
 ```
+image=registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:v2.0.0-beta.1
+conf_path_dir=/opt/cloudeon
 docker rm -f cloudeon
 docker run -d --name cloudeon \
  -e DB_ACTIVE=mysql \

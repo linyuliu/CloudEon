@@ -125,8 +125,9 @@ configurations:
     tag: "grafana"
 
   - name: image.registry.proxy.k8s
-    description: "该参数用于将helm用到的registry.k8s.io修改为目标值，避免因网络问题拉取失败"
-    recommendExpression: "registry.k8s.io"
+    description: "该参数用于将helm用到的registry.k8s.io修改为目标值，避免因网络问题导致镜像拉取失败。可参考https://github.com/ciiiii/cloudflare-docker-proxy"
+    needChangeInWizard: false
+    recommendExpression: "k8s-gcr.libcuda.so"
     valueType: InputString
     configurableInWizard: true
     tag: "镜像"

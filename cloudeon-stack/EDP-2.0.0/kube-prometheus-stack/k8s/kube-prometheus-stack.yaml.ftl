@@ -32,6 +32,12 @@ spec:
       serviceMonitor:
         cAdvisorMetricRelabelings: ""
     grafana:
+      image:
+        registry: registry.cn-guangzhou.aliyuncs.com
+        repository: bigdata200/grafana
+        # Overrides the Grafana image tag whose default is the chart appVersion
+        tag: "11.4.0"
+        pullPolicy: IfNotPresent
       sidecar:
         dashboards:
           provider:

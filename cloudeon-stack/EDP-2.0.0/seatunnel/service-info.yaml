@@ -3,7 +3,7 @@ label: "Seatunnel"
 description: "海量数据同步引擎"
 version: 2.3.7
 dependencies:
-  - hdfs
+  - "HDFS"
 
 supportKerberos: false
 
