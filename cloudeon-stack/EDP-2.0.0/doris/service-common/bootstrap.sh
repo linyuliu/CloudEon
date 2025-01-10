@@ -85,7 +85,20 @@ register_fe_node() {
     echo "${node_type}节点注册成功"
     return 0
 }
+register_be_node() {
+    local master_ip=$1
+    local master_query_port=$2
+    local be_ip=$3
+    local be_port=$4
 
+    mysql -uroot -P${master_query_port} -h${master_ip} -e "ALTER SYSTEM ADD BACKEND \"${be_ip}:${be_port}\";"
+    if [ $? -ne 0 ]; then
+        echo "警告: 注册be节点(${be_ip}:${be_port})失败，但将继续执行脚本。"
+        return 1
+    fi
+    echo "be节点注册成功: ${be_ip}:${be_port}"
+    return 0
+}
 # 根据 ROLE_FULL_NAME 启动相应的服务
 case "${ROLE_FULL_NAME}" in
     "doris-fe-master")
@@ -116,7 +129,9 @@ case "${ROLE_FULL_NAME}" in
     "doris-be")
         echo "启动 Doris BE..."
         start_be.sh --daemon
-        # BE节点的注册通常在FE上进行，这里可以添加BE注册的逻辑如果需要
+        if ! mysql -uroot -P${FE_QUERY_PORT} -h${MASTER_FE_IP} -e "show backends;" | grep -q ${POD_IP}; then
+            register_be_node "${MASTER_FE_IP}" "${FE_QUERY_PORT}" "${POD_IP}" "${FE_EDIT_LOG_PORT}" || echo "BE 注册失败，但将继续执行脚本。"
+        fi
         ;;
     *)
         echo "错误: 未知的角色 ${ROLE_FULL_NAME}"
