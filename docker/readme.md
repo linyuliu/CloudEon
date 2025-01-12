@@ -15,7 +15,7 @@ mvn clean package -Dmaven.test.skip
 ### 1.构建Docker镜像
 
 ```shell
-file_path="../cloudeon-assembly/target/cloudeon-assembly-v2.0.0-beta.1-release.tar.gz"
+file_path="../cloudeon-assembly/target/cloudeon-assembly-v2.0.0-beta.2-release.tar.gz"
 # 提取文件名部分
 filename="${file_path##*/}"
 cp $file_path ./
@@ -44,7 +44,7 @@ docker push registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:$version
 
 /opt/cloudeon/db 将用来存储h2文件
 ```shell
-image=registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:v2.0.0-beta.1
+image=registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:v2.0.0-beta.2
 
 docker run -d --name cloudeon \
  -p 7700:7700 \
@@ -58,7 +58,7 @@ docker run -d --name cloudeon \
 使用默认配置运行 Cloudeon 容器：
 
 ```shell
-image=registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:v2.0.0-beta.1
+image=registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:v2.0.0-beta.2
 
 docker run -d --name cloudeon \
  -p 7700:7700 \
@@ -78,7 +78,7 @@ docker run -d --name cloudeon \
 
 #### 获取配置文件
 ```shell
-image=registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:v2.0.0-beta.1
+image=registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:v2.0.0-beta.2
 conf_path_dir=/opt/cloudeon
 
 # 运行临时容器把配置文件复制到外部，如果已有配置文件则此步骤可以跳过
@@ -95,7 +95,7 @@ $image \
 #### 挂载文件并运行
 
 ```
-image=registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:v2.0.0-beta.1
+image=registry.cn-guangzhou.aliyuncs.com/bigdata200/cloudeon:v2.0.0-beta.2
 conf_path_dir=/opt/cloudeon
 docker rm -f cloudeon
 docker run -d --name cloudeon \

@@ -1,5 +1,5 @@
 import { PageContainer, ProCard } from '@ant-design/pro-components';
-import { Progress, Modal, Spin } from 'antd';
+import { Progress, Modal, Spin, Button, Select } from 'antd';
 import styles from './index.less'
 import { /*commandInfos,*/ statusColor,trailColor } from '../../../../utils/colonyColor'
 import { formatDate } from '@/utils/common'
@@ -20,6 +20,11 @@ const actionDetail: React.FC = () => {
   const [commandInfos, setCommandInfos] = useState<API.commandType>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [logData, setLogData] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(200); // 改为可修改的状态
+  const [totalLines, setTotalLines] = useState(0);
+  const [currentPageContent, setCurrentPageContent] = useState('');
+  const [currentTaskId, setCurrentTaskId] = useState<number>(0);
   
 
   const getTableData = async (params: any) => {
@@ -33,21 +38,51 @@ const actionDetail: React.FC = () => {
   };
 
   const getTaskLog = async (params: any) => {
-    setDetailLoading(true)
-    const result: API.logResult =  await getTaskLogAPI(params);
-    setDetailLoading(false)
-    if(result?.success){
-        setLogData(result?.data || '')
-    }else{
-        setLogData('')
+    setDetailLoading(true);
+    const result: API.logResult = await getTaskLogAPI(params);
+    setDetailLoading(false);
+    if (result?.success) {
+      const logContent = result?.data || '';
+      setLogData(logContent);
+      
+      const lines = logContent.split('\n');
+      setTotalLines(lines.length);
+      
+      // 计算最后一页的页码并显示
+      const lastPage = Math.max(1, Math.ceil(lines.length / pageSize));
+      updatePageContent(logContent, lastPage);
+    } else {
+      setLogData('');
+      setCurrentPageContent('');
+      setTotalLines(0);
     }
-  }
+  };
+
+  const updatePageContent = (content: string, page: number) => {
+    const lines = content.split('\n');
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = Math.min(startIndex + pageSize, lines.length);
+    const pageContent = lines.slice(startIndex, endIndex).join('\n');
+    setCurrentPageContent(pageContent);
+    setCurrentPage(page);
+  };
+
+  const handlePageChange = (page: number) => {
+    const maxPage = Math.ceil(totalLines / pageSize);
+    if (page < 1 || page > maxPage) return;
+    updatePageContent(logData, page);
+  };
 
   const handleOk = () => {
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setLogData('');
+    setCurrentPageContent('');
+    setTotalLines(0);
+    setCurrentPage(1);
+    setCurrentTaskId(0);
   };
 
   const handleTask = (name:any,index:any) => {
@@ -56,11 +91,13 @@ const actionDetail: React.FC = () => {
   }
 
   const handleLog = (id: number) => {
-    if(!id) return
-    // const codemirrorDom = document.getElementsByClassName('CodeMirror')[0]
-    // codemirrorDom.setAttribute("style","height: auto")
-    setIsModalOpen(true)
-    getTaskLog({commandTaskId: id})
+    if(!id) return;
+    setIsModalOpen(true);
+    setCurrentPage(1);
+    setTotalLines(0);
+    setCurrentPageContent('');
+    setCurrentTaskId(id);
+    getTaskLog({commandTaskId: id});
   }
 
   const handleStopCommand = async () => {
@@ -70,6 +107,25 @@ const actionDetail: React.FC = () => {
   const handleRetryCommand = async () => {
     const result: API.logResult =  await retryCommandAPI({commandId: commandInfos?.id});
   }
+
+  // 添加刷新日志的函数
+  const handleRefreshLog = () => {
+    if (currentTaskId) {
+      getTaskLog({commandTaskId: currentTaskId});
+    }
+  };
+
+  // 处理页面大小变化
+  const handlePageSizeChange = (newSize: number) => {
+    setPageSize(newSize);
+    // 重新计算当前页的内容
+    if (logData) {
+      const lines = logData.split('\n');
+      const maxPage = Math.ceil(lines.length / newSize);
+      const newPage = Math.min(currentPage, maxPage);
+      updatePageContent(logData, newPage);
+    }
+  };
 
   useEffect(() => {
     const { query } = history.location;
@@ -213,7 +269,6 @@ const actionDetail: React.FC = () => {
                     onCancel={handleCancel}
                     footer={null}
                 >
-                    {/* <div dangerouslySetInnerHTML={{__html:logData}} /> */}
                     <div>
                         <Spin tip="Loading" size="small" spinning={detailLoading}>
                         <SyntaxHighlighter 
@@ -222,8 +277,52 @@ const actionDetail: React.FC = () => {
                             showLineNumbers 
                             customStyle={{height:'60vh',overflow:'auto'}}
                         >
-                            {logData}
+                            {currentPageContent}
                         </SyntaxHighlighter>
+                        {totalLines > pageSize && (
+                            <div style={{ marginTop: '16px', textAlign: 'right', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div>
+                                    <Select
+                                        value={pageSize}
+                                        onChange={handlePageSizeChange}
+                                        style={{ width: 120, marginRight: '16px' }}
+                                        options={[
+                                            { value: 100, label: '100 行/页' },
+                                            { value: 200, label: '200 行/页' },
+                                            { value: 500, label: '500 行/页' },
+                                            { value: 1000, label: '1000 行/页' },
+                                        ]}
+                                    />
+                                    <Button 
+                                        onClick={handleRefreshLog}
+                                        size="small"
+                                        icon={<ReloadOutlined />}
+                                    >
+                                        刷新
+                                    </Button>
+                                </div>
+                                <div>
+                                    <Button 
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                        style={{ marginRight: '8px' }}
+                                        size="small"
+                                    >
+                                        上一页
+                                    </Button>
+                                    <span style={{ margin: '0 8px' }}>
+                                        {currentPage} / {Math.ceil(totalLines / pageSize)}
+                                    </span>
+                                    <Button 
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage >= Math.ceil(totalLines / pageSize)}
+                                        size="small"
+                                    >
+                                        下一页
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
                         </Spin>
                     </div>
                 </Modal>

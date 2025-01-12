@@ -3,14 +3,14 @@ label: "DINKY"
 description: "实时计算平台"
 version: 1.1.0
 dependencies:
-  - "HDFS"
+  - "FLINK"
   - "YARN"
   - "ZOOKEEPER"
 
 supportKerberos: false
 
 dashboard:
-  uid: ""
+  uid: "dinky001"
 
 roles:
   - name: DINKY_SERVER
