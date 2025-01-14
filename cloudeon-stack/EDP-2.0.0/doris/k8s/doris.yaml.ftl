@@ -182,6 +182,8 @@ spec:
             value: "${confFiles['fe.conf']["query_port"]}"
           - name: FE_EDIT_LOG_PORT
             value: "${confFiles['fe.conf']["edit_log_port"]}"
+          - name: BE_HEARTBEAT_SERVICE_PORT
+            value: "${confFiles['be.conf']["heartbeat_service_port"]}"
         volumeMounts:
         - mountPath: "/etc/localtime"
           name: "timezone"

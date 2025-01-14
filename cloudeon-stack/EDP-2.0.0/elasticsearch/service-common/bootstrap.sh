@@ -2,6 +2,7 @@
 
 # 这里不递归修改
 chown elasticsearch:elasticsearch /workspace
+chown elasticsearch:elasticsearch /workspace/*
 chown elasticsearch:elasticsearch /data/*
 
 su -m elasticsearch -c "mkdir -p /workspace/logs"

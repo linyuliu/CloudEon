@@ -235,6 +235,7 @@ configurations:
     configurableInWizard: true
     description: "web程序mysql数据库端口"
     needChangeInWizard: false
+    tag: "端口"
   - name: "MysqlUserName"
     recommendExpression: "root"
     valueType: InputString

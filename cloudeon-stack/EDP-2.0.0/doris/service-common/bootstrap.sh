@@ -130,7 +130,7 @@ case "${ROLE_FULL_NAME}" in
         echo "启动 Doris BE..."
         start_be.sh --daemon
         if ! mysql -uroot -P${FE_QUERY_PORT} -h${MASTER_FE_IP} -e "show backends;" | grep -q ${POD_IP}; then
-            register_be_node "${MASTER_FE_IP}" "${FE_QUERY_PORT}" "${POD_IP}" "${FE_EDIT_LOG_PORT}" || echo "BE 注册失败，但将继续执行脚本。"
+            register_be_node "${MASTER_FE_IP}" "${FE_QUERY_PORT}" "${POD_IP}" "${BE_HEARTBEAT_SERVICE_PORT}" || echo "BE 注册失败，但将继续执行脚本。"
         fi
         ;;
     *)
