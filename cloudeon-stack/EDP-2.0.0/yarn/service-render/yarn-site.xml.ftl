@@ -69,7 +69,7 @@
         <@property "yarn.resourcemanager.scheduler.address." + rmId rm + ":" + rm_scheduler_port/>
         <@property "yarn.resourcemanager.admin.address." + rmId rm + ":" + rm_admin_port/>
         <@property "yarn.resourcemanager.webapp.address." + rmId rm + ":" + rm_webapp_port/>
-        <#if rm==localhostname>
+        <#if rm==HOSTNAME>
             <@property "yarn.resourcemanager.ha.id" rmId/>
         </#if>
     </#list>
