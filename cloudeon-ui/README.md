@@ -32,3 +32,13 @@ npm start
 npm run build
 ```
 
+# 注意
+- node 版本一定使用文档中指定的版本号，否则会用依赖冲突
+```bash
+# 安装完nvm后还需要修改.zshrc 文件，根据输出结果提示修改即可
+brew install nvm  
+# 安装指定版本node
+nvm install  v16.13.2
+# 切换node版本
+nvm use v16.13.2
+```

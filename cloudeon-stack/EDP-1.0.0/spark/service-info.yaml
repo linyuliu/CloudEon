@@ -2,7 +2,7 @@ name: SPARK
 label: "Spark"
 description: "快速、高效的大数据处理引擎  "
 version: 3.2.3
-dockerImage: "registry.cn-hangzhou.aliyuncs.com/udh/spark:3.2.3"
+dockerImage: "harbor.trscd.com.cn/trs-police/udh-spark:3.2.3"
 dependencies:
     - "HDFS"
     - "YARN"

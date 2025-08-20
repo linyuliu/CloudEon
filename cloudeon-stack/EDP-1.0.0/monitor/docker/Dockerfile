@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/udh/jdk:1.8.141
+FROM harbor.trscd.com.cn/trs-police/udh-jdk:8
 
 WORKDIR /opt
 

@@ -1,7 +1,5 @@
-docker build -f Jdk-Dockerfile -t jdk:1.8.141 .
- docker tag jdk:1.8.141  registry.cn-hangzhou.aliyuncs.com/udh/jdk:1.8.141
- docker push  registry.cn-hangzhou.aliyuncs.com/udh/jdk:1.8.141
+docker buildx create --use --name multi-platform-builder \
+  --driver docker-container \
+  --driver-opt '"env.no_proxy=localhost,127.0.0.1,registry.cn-guangzhou.aliyuncs.com"'
 
- docker build -f Jdk17-Dockerfile -t jdk:17.0.8 .
-  docker tag jdk:17.0.8  registry.cn-hangzhou.aliyuncs.com/udh/jdk:17.0.8
-  docker push  registry.cn-hangzhou.aliyuncs.com/udh/jdk:17.0.8
+docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t c --push .

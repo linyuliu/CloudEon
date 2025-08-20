@@ -1,7 +1,1 @@
-docker build -f Dockerfile -t zookeeper:3.5.9 .
-#docker tag zookeeper:3.5.9 registry.cn-hangzhou.aliyuncs.com/udh/zookeeper:3.5.9
-#docker push registry.cn-hangzhou.aliyuncs.com/udh/zookeeper:3.5.9
-
-docker tag zookeeper:3.5.9 registry.mufankong.top/udh/zookeeper:3.5.9
-docker push  registry.mufankong.top/udh/zookeeper:3.5.9
-
+docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t harbor.trscd.com.cn/trs-police/udh-zookeeper:3.5.9 --push .
