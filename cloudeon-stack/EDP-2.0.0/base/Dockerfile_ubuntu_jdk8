@@ -26,7 +26,8 @@ RUN apt update && \
 
 # Set JAVA_HOME dynamically for multi-platform support
 RUN echo 'export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")' >> /etc/environment
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-$(dpkg --print-architecture)
+# For Docker ENV, we'll use a generic path and rely on /etc/environment for the correct one
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk
 ENV PATH=$JAVA_HOME/bin:$PATH
 
 RUN chsrc set ubuntu first && apt-get install -y mysql-client
