@@ -84,8 +84,6 @@ RUN ln -sf /usr/bin/python3.11 /usr/bin/python && \
 # 验证 Python 和 pip 版本
 RUN python --version && pip --version
 
-RUN chsrc set python first
-
 RUN \cp -f /opt/hive/lib/mysql-connector-java.jar $DOLPHINSCHEDULER_HOME/libs/
 
 RUN apt-get update && apt-get install -y sudo
