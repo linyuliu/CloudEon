@@ -18,7 +18,7 @@ on:
         type: string
 
 env:
-  REGISTRY: ccr.ccs.tencentyun.com
+  REGISTRY: hkccr.ccs.tencentyun.com
   NAMESPACE: cloudeon
 
 jobs:
