@@ -1,4 +1,4 @@
-FROM registry.cn-guangzhou.aliyuncs.com/bigdata200/hadoop:3.3.4
+FROM ccr.ccs.tencentyun.com/cloudeon/hadoop:3.3.6
 
 ENV HIVE_HOME=/opt/hive
 ENV HIVE_VERSION=3.1.3

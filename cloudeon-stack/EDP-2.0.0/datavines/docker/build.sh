@@ -1,2 +1,3 @@
-docker build -t registry.cn-guangzhou.aliyuncs.com/bigdata200/datavines:1.0.0 .
-docker push  registry.cn-guangzhou.aliyuncs.com/bigdata200/datavines:1.0.0
+#!/bin/bash
+
+docker build -t ccr.ccs.tencentyun.com/cloudeon/datavines:1.0.0 .

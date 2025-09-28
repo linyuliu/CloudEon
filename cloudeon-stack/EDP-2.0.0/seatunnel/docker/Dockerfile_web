@@ -1,4 +1,4 @@
-FROM registry.cn-guangzhou.aliyuncs.com/bigdata200/seatunnel:2.3.7
+FROM ccr.ccs.tencentyun.com/cloudeon/seatunnel:2.3.7
 
 ENV SEATUNNEL_WEB_VERSION="1.0.1"
 ENV SEATUNNEL_WEB_HOME="/opt/seatunnel-web"

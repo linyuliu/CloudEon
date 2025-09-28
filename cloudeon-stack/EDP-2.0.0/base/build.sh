@@ -1,10 +1,13 @@
+#!/bin/bash
+
+# Login to Tencent Cloud Registry
+echo "${DOCKER_PASSWORD:-qwer123.}" | docker login ccr.ccs.tencentyun.com --username=100014663870 --password-stdin
+
+# Create multi-platform builder
 docker buildx create --use --name multi-platform-builder \
-  --driver docker-container \
-  --driver-opt env.http_proxy="http://192.168.200.192:8011" \
-  --driver-opt env.https_proxy="http://192.168.200.192:8011" \
-  --driver-opt '"env.no_proxy=localhost,127.0.0.1,registry.cn-guangzhou.aliyuncs.com"'
+  --driver docker-container 2>/dev/null || true
 
-
-docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile_ubuntu_jdk8 -t registry.cn-guangzhou.aliyuncs.com/bigdata200/jdk:8-ubuntu --push .
-docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t registry.cn-guangzhou.aliyuncs.com/bigdata200/jdk:latest --push .
-docker buildx build --platform linux/amd64,linux/arm64 -f DockerfileJdk17 -t registry.cn-guangzhou.aliyuncs.com/bigdata200/jdk:17 --push .
+# Build and push multi-platform images
+docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile_ubuntu_jdk8 -t ccr.ccs.tencentyun.com/cloudeon/jdk:8-ubuntu --push .
+docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t ccr.ccs.tencentyun.com/cloudeon/jdk:latest --push .
+docker buildx build --platform linux/amd64,linux/arm64 -f DockerfileJdk17 -t ccr.ccs.tencentyun.com/cloudeon/jdk:17 --push .

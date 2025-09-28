@@ -1,3 +1,4 @@
-docker build  -f Dockerfile -t registry.cn-guangzhou.aliyuncs.com/bigdata200/hive:3.1.3  .
-docker push  registry.cn-guangzhou.aliyuncs.com/bigdata200/hive:3.1.3
+#!/bin/bash
+
+docker build  -f Dockerfile -t ccr.ccs.tencentyun.com/cloudeon/hive:3.1.3  .
 

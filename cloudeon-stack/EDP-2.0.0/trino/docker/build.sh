@@ -1,2 +1,3 @@
-docker build  -f Dockerfile -t registry.cn-guangzhou.aliyuncs.com/bigdata200/trino:424  .
-docker push  registry.cn-guangzhou.aliyuncs.com/bigdata200/trino:424
+#!/bin/bash
+
+docker build  -f Dockerfile -t ccr.ccs.tencentyun.com/cloudeon/trino:424  .

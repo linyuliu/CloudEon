@@ -1,4 +1,4 @@
-FROM registry.cn-guangzhou.aliyuncs.com/bigdata200/hive:3.1.3
+FROM ccr.ccs.tencentyun.com/cloudeon/hive:3.1.3
 
 ENV KYLIN_HOME=/opt/kylin
 ENV PATH=$PATH:$KYLIN_HOME/bin

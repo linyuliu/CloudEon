@@ -1,7 +1,7 @@
-FROM registry.cn-guangzhou.aliyuncs.com/bigdata200/jdk:latest
+FROM ccr.ccs.tencentyun.com/cloudeon/jdk:latest
 
 ENV HADOOP_HOME=/opt/hadoop \
-    HADOOP_VERSION=3.3.4
+    HADOOP_VERSION=3.3.6
 ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
 
 RUN wget https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && tar -zxvf hadoop-${HADOOP_VERSION}.tar.gz -C /opt \

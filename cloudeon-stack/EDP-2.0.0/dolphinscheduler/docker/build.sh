@@ -1,2 +1,3 @@
-docker build -t registry.cn-guangzhou.aliyuncs.com/bigdata200/dolphinscheduler:3.2.2 .
-docker push  registry.cn-guangzhou.aliyuncs.com/bigdata200/dolphinscheduler:3.2.2
+#!/bin/bash
+
+docker build -t ccr.ccs.tencentyun.com/cloudeon/dolphinscheduler:3.2.2 .

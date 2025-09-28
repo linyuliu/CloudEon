@@ -1,4 +1,4 @@
-FROM registry.cn-guangzhou.aliyuncs.com/bigdata200/hadoop:3.3.4
+FROM ccr.ccs.tencentyun.com/cloudeon/hadoop:3.3.6
 
 ENV SPARK_HOME=/opt/spark
 ENV SPARK_VERSION=3.2.3
