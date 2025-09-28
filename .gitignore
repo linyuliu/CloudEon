@@ -54,3 +54,7 @@ cloudeon-ui/package-lock.json
 cloudeon-ui/pnpm-lock.yaml
 cloudeon-ui/dist
 web-ui
+
+# Docker build artifacts
+*.bak
+**/docker/build-*.log
