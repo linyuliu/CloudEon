@@ -1,12 +1,27 @@
-FROM ccr.ccs.tencentyun.com/cloudeon/jdk:latest
+FROM ccr.ccs.tencentyun.com/cloudeon/jdk:8-ubuntu
+
+ARG HADOOP_VERSION=3.3.6
+# Docker will automatically provide TARGETARCH: amd64 or arm64
+ARG TARGETARCH
 
 ENV HADOOP_HOME=/opt/hadoop \
-    HADOOP_VERSION=3.3.6
-ENV PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+    HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop \
+    PATH=$PATH:/opt/hadoop/bin:/opt/hadoop/sbin
 
-RUN wget https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz && tar -zxvf hadoop-${HADOOP_VERSION}.tar.gz -C /opt \
-    && rm -f hadoop-*.tar.gz && mv /opt/hadoop-*  ${HADOOP_HOME}
+WORKDIR /opt
+
+# Select Hadoop package based on architecture
+RUN apt-get update && apt-get install -y wget tar gzip \
+ && if [ "$TARGETARCH" = "arm64" ]; then \
+        wget -O hadoop-${HADOOP_VERSION}.tar.gz \
+          https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}-aarch64.tar.gz ; \
+    else \
+        wget -O hadoop-${HADOOP_VERSION}.tar.gz \
+          https://mirrors.huaweicloud.com/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz ; \
+    fi \
+ && tar -zxvf hadoop-${HADOOP_VERSION}.tar.gz \
+ && mv hadoop-${HADOOP_VERSION}* ${HADOOP_HOME} \
+ && rm -f hadoop-${HADOOP_VERSION}.tar.gz \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR $HADOOP_HOME
-
-ENV HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
