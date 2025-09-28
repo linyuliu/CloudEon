@@ -8,7 +8,18 @@ ENV TZ=Asia/Shanghai  \
 ENV PATH=$PATH:$FREEMARKER_GENERATOR_CLI_HOME/bin
 
 RUN apt-get update && apt-get install -y curl
-RUN curl -L https://gitee.com/RubyMetric/chsrc/releases/download/pre/chsrc-x64-linux -o chsrc && chmod +x ./chsrc && mv ./chsrc /usr/bin/
+
+# Docker buildx provides TARGETARCH (amd64 or arm64)
+ARG TARGETARCH
+RUN set -ex; \
+        if [ "$TARGETARCH" = "amd64" ]; then \
+            CHSRC_URL="https://github.com/RubyMetric/chsrc/releases/download/v0.2.2/chsrc-x64-linux"; \
+        elif [ "$TARGETARCH" = "arm64" ]; then \
+            CHSRC_URL="https://github.com/RubyMetric/chsrc/releases/download/v0.2.2/chsrc-aarch64-linux"; \
+        else \
+            echo "ERROR: Unsupported architecture $TARGETARCH"; exit 1; \
+        fi; \
+    curl -L $CHSRC_URL -o chsrc && chmod +x ./chsrc && mv ./chsrc /usr/bin/
 RUN chsrc set ubuntu first
 
 RUN apt-get update && apt-get install -y wget net-tools vim perl debianutils  netcat zip unzip lsof bc hostname cron
