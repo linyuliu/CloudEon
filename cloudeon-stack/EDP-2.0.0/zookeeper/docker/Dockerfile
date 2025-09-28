@@ -1,4 +1,4 @@
-FROM registry.cn-guangzhou.aliyuncs.com/bigdata200/jdk:latest
+FROM ccr.ccs.tencentyun.com/cloudeon/jdk:latest
 
 ENV ZOOKEEPER_HOME=/opt/zookeeper \
     ZOOKEEPER_VERSION=3.7.1

@@ -1,2 +1,3 @@
-docker build -t registry.cn-guangzhou.aliyuncs.com/bigdata200/dinky:1.1.0 .
-docker push  registry.cn-guangzhou.aliyuncs.com/bigdata200/dinky:1.1.0
+#!/bin/bash
+
+docker build -t ccr.ccs.tencentyun.com/cloudeon/dinky:1.1.0 .

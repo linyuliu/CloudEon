@@ -1,0 +1,228 @@
+name: Multi-platform Docker Builds
+
+on:
+  push:
+    branches: [ dev2.0 ]
+    paths:
+      - 'cloudeon-stack/EDP-2.0.0/**/docker/**'
+  pull_request:
+    branches: [ dev2.0 ]
+    paths:
+      - 'cloudeon-stack/EDP-2.0.0/**/docker/**'
+  workflow_dispatch:
+    inputs:
+      component:
+        description: 'Component to build (all, base, hdfs, spark, etc.)'
+        required: false
+        default: 'all'
+        type: string
+
+env:
+  REGISTRY: ccr.ccs.tencentyun.com
+  NAMESPACE: cloudeon
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      components: ${{ steps.filter.outputs.changes }}
+      base: ${{ steps.filter.outputs.base }}
+      hdfs: ${{ steps.filter.outputs.hdfs }}
+      spark: ${{ steps.filter.outputs.spark }}
+      hbase: ${{ steps.filter.outputs.hbase }}
+      kafka: ${{ steps.filter.outputs.kafka }}
+      zookeeper: ${{ steps.filter.outputs.zookeeper }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            base:
+              - 'cloudeon-stack/EDP-2.0.0/base/**'
+            hdfs:
+              - 'cloudeon-stack/EDP-2.0.0/hdfs/docker/**'
+            spark:
+              - 'cloudeon-stack/EDP-2.0.0/spark/docker/**'
+            hbase:
+              - 'cloudeon-stack/EDP-2.0.0/hbase/docker/**'
+            kafka:
+              - 'cloudeon-stack/EDP-2.0.0/kafka/docker/**'
+            zookeeper:
+              - 'cloudeon-stack/EDP-2.0.0/zookeeper/docker/**'
+
+  build-base:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.base == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'base' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Login to Tencent Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: 100014663870
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Build and push JDK 8 Ubuntu
+        uses: docker/build-push-action@v5
+        with:
+          context: ./cloudeon-stack/EDP-2.0.0/base
+          file: ./cloudeon-stack/EDP-2.0.0/base/Dockerfile_ubuntu_jdk8
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/jdk:8-ubuntu
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          
+      - name: Build and push JDK Latest (OpenEuler)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./cloudeon-stack/EDP-2.0.0/base
+          file: ./cloudeon-stack/EDP-2.0.0/base/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/jdk:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          
+      - name: Build and push JDK 17
+        uses: docker/build-push-action@v5
+        with:
+          context: ./cloudeon-stack/EDP-2.0.0/base
+          file: ./cloudeon-stack/EDP-2.0.0/base/DockerfileJdk17
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/jdk:17
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build-hadoop:
+    needs: [detect-changes, build-base]
+    if: always() && (needs.detect-changes.outputs.hdfs == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'hdfs')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Login to Tencent Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: 100014663870
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Build and push Hadoop
+        uses: docker/build-push-action@v5
+        with:
+          context: ./cloudeon-stack/EDP-2.0.0/hdfs/docker
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/hadoop:3.3.6
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build-components:
+    needs: [detect-changes, build-hadoop]
+    if: always()
+    strategy:
+      fail-fast: false
+      matrix:
+        component:
+          - name: spark
+            version: "3.2.3"
+            condition: ${{ needs.detect-changes.outputs.spark == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'spark' }}
+          - name: hbase
+            version: "2.4.16"
+            condition: ${{ needs.detect-changes.outputs.hbase == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'hbase' }}
+          - name: kafka
+            version: "2.8.2"
+            condition: ${{ needs.detect-changes.outputs.kafka == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'kafka' }}
+          - name: zookeeper
+            version: "3.7.1"
+            condition: ${{ needs.detect-changes.outputs.zookeeper == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'zookeeper' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        if: ${{ matrix.component.condition }}
+        uses: actions/checkout@v4
+        
+      - name: Set up Docker Buildx
+        if: ${{ matrix.component.condition }}
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Login to Tencent Container Registry
+        if: ${{ matrix.component.condition }}
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: 100014663870
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Build and push ${{ matrix.component.name }}
+        if: ${{ matrix.component.condition }}
+        uses: docker/build-push-action@v5
+        with:
+          context: ./cloudeon-stack/EDP-2.0.0/${{ matrix.component.name }}/docker
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/${{ matrix.component.name }}:${{ matrix.component.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  build-master:
+    needs: [build-base]
+    if: always() && (github.event.inputs.component == 'all' || github.event.inputs.component == 'master')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          
+      - name: Cache Maven packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+          
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+        
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        
+      - name: Login to Tencent Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: 100014663870
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          
+      - name: Prepare Docker context
+        run: cp -r cloudeon-assembly/target/cloudeon-assembly-*-release ./docker
+        
+      - name: Build and push CloudEon master
+        uses: docker/build-push-action@v5
+        with:
+          context: ./docker
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/cloudeon:dev2.0
+          build-args: |
+            CLOUDEON_VERSION=dev2.0
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

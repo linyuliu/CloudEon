@@ -1,4 +1,4 @@
-FROM registry.cn-guangzhou.aliyuncs.com/bigdata200/jdk:latest
+FROM ccr.ccs.tencentyun.com/cloudeon/jdk:latest
 
 ENV JAVA_HOME=/usr/lib/jvm/java-17
 ENV PATH=$JAVA_HOME/bin:$PATH

@@ -1,4 +1,4 @@
-FROM registry.cn-guangzhou.aliyuncs.com/bigdata200/flink:1.15.4
+FROM ccr.ccs.tencentyun.com/cloudeon/flink:1.15.4
 
 
 ENV FLINK_VERSION=1.15.4
