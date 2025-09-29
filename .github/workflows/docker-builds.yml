@@ -80,27 +80,27 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           
-      - name: Build and push JDK Latest (OpenEuler)
-        uses: docker/build-push-action@v5
-        with:
-          context: ./cloudeon-stack/EDP-2.0.0/base
-          file: ./cloudeon-stack/EDP-2.0.0/base/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/jdk:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      # - name: Build and push JDK Latest (OpenEuler)
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./cloudeon-stack/EDP-2.0.0/base
+      #     file: ./cloudeon-stack/EDP-2.0.0/base/Dockerfile
+      #     platforms: linux/amd64,linux/arm64
+      #     push: true
+      #     tags: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/jdk:latest
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
           
-      - name: Build and push JDK 17
-        uses: docker/build-push-action@v5
-        with:
-          context: ./cloudeon-stack/EDP-2.0.0/base
-          file: ./cloudeon-stack/EDP-2.0.0/base/DockerfileJdk17
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/jdk:17
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      # - name: Build and push JDK 17
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./cloudeon-stack/EDP-2.0.0/base
+      #     file: ./cloudeon-stack/EDP-2.0.0/base/DockerfileJdk17
+      #     platforms: linux/amd64,linux/arm64
+      #     push: true
+      #     tags: ${{ env.REGISTRY }}/${{ env.NAMESPACE }}/jdk:17
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
 
   build-hadoop:
     needs: [detect-changes, build-base]
