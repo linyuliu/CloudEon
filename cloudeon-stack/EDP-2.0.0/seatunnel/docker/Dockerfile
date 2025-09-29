@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/cloudeon/jdk:latest
+FROM hkccr.ccs.tencentyun.com/cloudeon/jdk:latest
 
 ENV SEATUNNEL_VERSION="2.3.7"
 ENV SEATUNNEL_HOME="/opt/seatunnel"

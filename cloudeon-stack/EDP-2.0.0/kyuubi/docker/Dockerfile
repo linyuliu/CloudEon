@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/cloudeon/spark:3.2.3
+FROM hkccr.ccs.tencentyun.com/cloudeon/spark:3.2.3
 
 ENV KYUUBI_HOME=/opt/kyuubi
 ENV PATH=$PATH:$KYUUBI_HOME/bin

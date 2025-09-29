@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/cloudeon/hadoop:3.3.6
+FROM hkccr.ccs.tencentyun.com/cloudeon/hadoop:3.3.6
 
 ENV FLINK_HOME=/opt/flink
 ENV FLINK_VERSION=1.15.4

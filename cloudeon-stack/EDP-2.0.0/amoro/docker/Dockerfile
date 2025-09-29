@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/cloudeon/flink:1.15.4
+FROM hkccr.ccs.tencentyun.com/cloudeon/flink:1.15.4
 
 ENV AMORO_HOME=/opt/amoro
 ENV PATH=$PATH:$AMORO_HOME/bin

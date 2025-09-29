@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/cloudeon/jdk:latest
+FROM hkccr.ccs.tencentyun.com/cloudeon/jdk:latest
 
 ENV KAFKA_HOME=/opt/kafka \
     KAFKA_VERSION=2.8.2

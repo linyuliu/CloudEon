@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/cloudeon/jdk:latest
+FROM hkccr.ccs.tencentyun.com/cloudeon/jdk:latest
 
 ENV ELASTICSEARCH_HOME=/opt/elasticsearch \
     ELASTICSEARCH_VERSION=7.16.3
