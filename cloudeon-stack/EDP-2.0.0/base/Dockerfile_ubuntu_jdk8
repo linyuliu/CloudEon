@@ -8,7 +8,13 @@ ENV TZ=Asia/Shanghai  \
 ENV PATH=$PATH:$FREEMARKER_GENERATOR_CLI_HOME/bin
 
 # Install all packages in one step to reduce layer size and avoid multiple source updates
-RUN apt-get update && apt-get install -y \
+# Use different mirrors based on architecture for better reliability
+RUN if [ "$(uname -m)" = "x86_64" ]; then \
+        sed -i 's|http://archive.ubuntu.com/ubuntu/|http://mirrors.aliyun.com/ubuntu/|g' /etc/apt/sources.list; \
+    else \
+        sed -i 's|http://ports.ubuntu.com/ubuntu-ports/|http://mirrors.ustc.edu.cn/ubuntu-ports/|g' /etc/apt/sources.list; \
+    fi \
+    && apt-get update && apt-get install -y \
     curl \
     wget \
     net-tools \
