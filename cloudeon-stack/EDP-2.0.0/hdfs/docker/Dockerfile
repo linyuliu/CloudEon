@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/cloudeon/jdk:8-ubuntu
+FROM hkccr.ccs.tencentyun.com/cloudeon/jdk:8-ubuntu
 
 ARG HADOOP_VERSION=3.3.6
 # Docker will automatically provide TARGETARCH: amd64 or arm64
