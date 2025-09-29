@@ -5,7 +5,7 @@
 
 set -e
 
-REGISTRY=${REGISTRY:-ccr.ccs.tencentyun.com/cloudeon}
+REGISTRY=${REGISTRY:-hkccr.ccs.tencentyun.com/cloudeon}
 DOCKER_PASSWORD=${DOCKER_PASSWORD:-qwer123.}
 BASE_DIR="/home/runner/work/CloudEon/CloudEon/cloudeon-stack/EDP-2.0.0"
 
@@ -37,7 +37,7 @@ setup_buildx() {
 # Login to registry
 login_registry() {
     log "Logging into Tencent Cloud Container Registry"
-    echo "${DOCKER_PASSWORD}" | docker login ccr.ccs.tencentyun.com --username=100014663870 --password-stdin
+    echo "${DOCKER_PASSWORD}" | docker login hkccr.ccs.tencentyun.com --username=100014663870 --password-stdin
 }
 
 # Build jdk8_ubuntu with priority
