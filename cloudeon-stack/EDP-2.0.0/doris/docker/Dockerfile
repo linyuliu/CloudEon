@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/cloudeon/jdk:latest
+FROM hkccr.ccs.tencentyun.com/cloudeon/jdk:latest
 
 ENV DORIS_HOME=/opt/doris
 ENV PATH=$PATH:$DORIS_HOME/fe/bin:$DORIS_HOME/be/bin

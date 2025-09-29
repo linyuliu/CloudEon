@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/cloudeon/hadoop:3.3.6
+FROM hkccr.ccs.tencentyun.com/cloudeon/hadoop:3.3.6
 
 ENV HBASE_HOME=/opt/hbase
 ENV HBASE_VERSION=2.4.16
