@@ -150,6 +150,12 @@ main() {
         "zookeeper")
             build_component "ZooKeeper" "$BASE_DIR/zookeeper/docker" "zookeeper:3.7.1"
             ;;
+        "hive")
+            build_component "Hive" "$BASE_DIR/hive/docker" "hive:3.1.3"
+            ;;
+        "flink")
+            build_component "Flink" "$BASE_DIR/flink/docker" "flink:1.15.4"
+            ;;
         "all")
             log "Building all components in dependency order"
             build_base
@@ -160,7 +166,7 @@ main() {
             ;;
         *)
             error "Unknown component: $COMPONENT"
-            echo "Available components: all, base, hadoop, spark, hbase, kafka, zookeeper"
+            echo "Available components: all, base, hadoop, spark, hbase, hive, flink, kafka, zookeeper"
             exit 1
             ;;
     esac
