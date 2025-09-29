@@ -7,7 +7,7 @@ ENV TZ=Asia/Shanghai  \
     FREEMARKER_GENERATOR_CLI_HOME=/opt/freemarker-generator-cli
 ENV PATH=$PATH:$JAVA_HOME/bin:$FREEMARKER_GENERATOR_CLI_HOME/bin
 
-RUN  yum  -y install  wget net-tools vim perl which  nc zip unzip lsof bc hostname crontabs java-1.8.0-openjdk-devel
+RUN  yum  -y install  wget net-tools vim perl which  nc zip unzip lsof bc hostname crontabs cronie cronie-anacron java-1.8.0-openjdk-devel
 
 ADD freemarker-generator-cli-0.2.0-SNAPSHOT-app.tar.gz /opt/
 
