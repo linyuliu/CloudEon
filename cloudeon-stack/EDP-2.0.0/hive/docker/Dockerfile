@@ -17,10 +17,4 @@ RUN  curl -fSL $MYSQL_CONN_URL -o /tmp/mysql-connector-java.tar.gz     && tar -x
   && cp /tmp/mysql-connector-java-${MYSQL_CONN_VERSION}/mysql-connector-java-${MYSQL_CONN_VERSION}.jar $HIVE_HOME/lib/mysql-connector-java.jar  \
   && rm -rf /tmp/mysql-connector-*
 
-# Add Flink integration JARs for Hive
-ENV FLINK_VERSION=1.15.4
-RUN wget https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-hive-3.1.2_2.12/${FLINK_VERSION}/flink-sql-connector-hive-3.1.2_2.12-${FLINK_VERSION}.jar \
-    && wget https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-hive_2.12/${FLINK_VERSION}/flink-connector-hive_2.12-${FLINK_VERSION}.jar \
-    && mv flink-*.jar $HIVE_HOME/lib/
-
 WORKDIR $HIVE_HOME

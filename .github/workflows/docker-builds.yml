@@ -30,6 +30,8 @@ jobs:
       hdfs: ${{ steps.filter.outputs.hdfs }}
       spark: ${{ steps.filter.outputs.spark }}
       hbase: ${{ steps.filter.outputs.hbase }}
+      hive: ${{ steps.filter.outputs.hive }}
+      flink: ${{ steps.filter.outputs.flink }}
       kafka: ${{ steps.filter.outputs.kafka }}
       zookeeper: ${{ steps.filter.outputs.zookeeper }}
     steps:
@@ -46,6 +48,10 @@ jobs:
               - 'cloudeon-stack/EDP-2.0.0/spark/docker/**'
             hbase:
               - 'cloudeon-stack/EDP-2.0.0/hbase/docker/**'
+            hive:
+              - 'cloudeon-stack/EDP-2.0.0/hive/docker/**'
+            flink:
+              - 'cloudeon-stack/EDP-2.0.0/flink/docker/**'
             kafka:
               - 'cloudeon-stack/EDP-2.0.0/kafka/docker/**'
             zookeeper:
@@ -104,7 +110,7 @@ jobs:
 
   build-hadoop:
     needs: [detect-changes, build-base]
-    if: always() && (needs.detect-changes.outputs.hdfs == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'hdfs')
+    if: always() && (needs.detect-changes.outputs.hdfs == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'hdfs' || github.event.inputs.component == 'spark' || github.event.inputs.component == 'hbase' || github.event.inputs.component == 'hive' || github.event.inputs.component == 'flink')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -139,10 +145,16 @@ jobs:
         component:
           - name: spark
             version: "3.2.3"
-            condition: ${{ needs.detect-changes.outputs.spark == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'spark' }}
+            condition: ${{ (needs.detect-changes.outputs.spark == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'spark') && (needs.build-hadoop.result == 'success' || needs.build-hadoop.result == 'skipped') }}
           - name: hbase
             version: "2.4.16"
-            condition: ${{ needs.detect-changes.outputs.hbase == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'hbase' }}
+            condition: ${{ (needs.detect-changes.outputs.hbase == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'hbase') && (needs.build-hadoop.result == 'success' || needs.build-hadoop.result == 'skipped') }}
+          - name: hive
+            version: "3.1.3"
+            condition: ${{ (needs.detect-changes.outputs.hive == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'hive') && (needs.build-hadoop.result == 'success' || needs.build-hadoop.result == 'skipped') }}
+          - name: flink
+            version: "1.15.4"
+            condition: ${{ (needs.detect-changes.outputs.flink == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'flink') && (needs.build-hadoop.result == 'success' || needs.build-hadoop.result == 'skipped') }}
           - name: kafka
             version: "2.8.2"
             condition: ${{ needs.detect-changes.outputs.kafka == 'true' || github.event.inputs.component == 'all' || github.event.inputs.component == 'kafka' }}
