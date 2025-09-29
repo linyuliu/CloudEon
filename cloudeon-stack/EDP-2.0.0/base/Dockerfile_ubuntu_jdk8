@@ -7,25 +7,43 @@ ENV TZ=Asia/Shanghai  \
     FREEMARKER_GENERATOR_CLI_HOME=/opt/freemarker-generator-cli
 ENV PATH=$PATH:$FREEMARKER_GENERATOR_CLI_HOME/bin
 
-RUN apt-get update && apt-get install -y curl
-
-RUN apt-get update && apt-get install -y wget net-tools vim perl debianutils  netcat zip unzip lsof bc hostname cron
+# Install all packages in one step to reduce layer size and avoid multiple source updates
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    net-tools \
+    vim \
+    perl \
+    debianutils \
+    netcat \
+    zip \
+    unzip \
+    lsof \
+    bc \
+    hostname \
+    cron \
+    openjdk-8-jdk \
+    mysql-client \
+    && rm -rf /var/lib/apt/lists/*
 
 ADD freemarker-generator-cli-0.2.0-SNAPSHOT-app.tar.gz /opt/
 RUN mv /opt/freemarker-generator-cli-* /opt/freemarker-generator-cli
 
 # setup jmx exporter
-RUN wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.20.0/jmx_prometheus_javaagent-0.20.0.jar  \
+RUN wget --no-check-certificate https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.20.0/jmx_prometheus_javaagent-0.20.0.jar  \
     && mkdir -p /opt/jmx_exporter  \
     && mv jmx_prometheus_javaagent-0.20.0.jar /opt/jmx_exporter/jmx_prometheus_javaagent.jar
 
-RUN apt update && \
-    apt install -y openjdk-8-jdk
-
 # Set JAVA_HOME dynamically for multi-platform support
-RUN echo 'export JAVA_HOME=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::")' >> /etc/environment
-# For Docker ENV, we'll use a generic path and rely on /etc/environment for the correct one
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk
+RUN JAVA_HOME_PATH=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::") \
+    && echo "export JAVA_HOME=$JAVA_HOME_PATH" >> /etc/environment \
+    && echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> /etc/environment \
+    && echo "Detected JAVA_HOME: $JAVA_HOME_PATH"
+
+# Set fallback JAVA_HOME for ENV (will be overridden by /etc/environment)
+ENV JAVA_HOME=/usr/lib/jvm/default-java
 ENV PATH=$JAVA_HOME/bin:$PATH
 
-RUN apt-get install -y mysql-client
+# Create symlink for consistent access
+RUN JAVA_HOME_PATH=$(readlink -f /usr/bin/javac | sed "s:/bin/javac::") \
+    && ln -sf $JAVA_HOME_PATH /usr/lib/jvm/default-java
